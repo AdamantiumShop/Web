@@ -168,53 +168,69 @@
     <p>&copy; 2025 Adamantium. Todos los derechos reservados.</p>
   </footer>
 
-  <script>
-    // Carrusel JS
+    <script>
     window.onload = () => {
-      const slider = document.getElementById("carrusel-slider");
-      const reseñas = slider.children;
-      let index = 0;
+      // --- Carrusel JS Corregido ---
+      const slider = document.querySelector(".carrusel-slider"); // Asegúrate que la clase en HTML es "carrusel-slider"
 
-      // Clonamos nodos para bucle continuo
-      for (let i = 0; i < reseñas.length; i++) {
-        const clone = reseñas[i].cloneNode(true);
-        slider.appendChild(clone);
-      }
+      if (slider) { // Comprobar si el slider existe antes de operar
+        const originalReseñas = Array.from(slider.children); // Crear un array estático de las reseñas originales
+        const numOriginalReseñas = originalReseñas.length;
+        let index = 0;
 
-      function slide() {
-        index++;
-        slider.style.transform = `translateX(-${index * 310}px)`;
-        slider.style.transition = "transform 0.5s ease-in-out";
+        if (numOriginalReseñas > 0) { // Solo clonar y animar si hay reseñas originales
+          // Clonamos nodos para bucle continuo usando el array estático
+          for (let i = 0; i < numOriginalReseñas; i++) {
+            const clone = originalReseñas[i].cloneNode(true);
+            slider.appendChild(clone);
+          }
 
-        if (index >= reseñas.length) {
-          setTimeout(() => {
-            slider.style.transition = "none";
-            slider.style.transform = "translateX(0)";
-            index = 0;
-          }, 600);
+          function slide() {
+            index++;
+            slider.style.transform = `translateX(-${index * 310}px)`; // 310px es el ancho de cada reseña + gap
+            slider.style.transition = "transform 0.5s ease-in-out";
+
+            // Usar numOriginalReseñas para la condición de reinicio
+            if (index >= numOriginalReseñas) {
+              setTimeout(() => {
+                slider.style.transition = "none"; // Quitar transición para el salto instantáneo
+                slider.style.transform = "translateX(0)";
+                index = 0;
+              }, 500); // Debe ser igual o un poco mayor que la duración de la transición
+            }
+          }
+          setInterval(slide, 4000); // Iniciar el carrusel
         }
+      } else {
+        console.error("Elemento .carrusel-slider no encontrado.");
       }
-
-      setInterval(slide, 4000);
 
       // --- Funcionalidad del menú hamburguesa ---
       const hamburger = document.querySelector('.hamburger-menu');
-      const navMenu = document.querySelector('.nav-menu');
+      const nav = document.querySelector('.nav-menu');
 
-      hamburger.addEventListener('click', () => {
+      if (hamburger && nav) {
+        hamburger.addEventListener('click', () => {
           hamburger.classList.toggle('active');
-          navMenu.classList.toggle('active');
-          document.body.classList.toggle('no-scroll'); // Opcional: para evitar scroll en el body cuando el menú está abierto
-      });
+          nav.classList.toggle('active');
+          document.body.classList.toggle('no-scroll');
+        });
 
-      // Cerrar el menú si se hace clic en un enlace (para navegar y cerrar automáticamente)
-      document.querySelectorAll('.nav-menu ul li a').forEach(item => {
+        // Cerrar el menú si se hace clic en un enlace
+        const navLinks = nav.querySelectorAll('ul li a');
+        navLinks.forEach(item => {
           item.addEventListener('click', () => {
-              hamburger.classList.remove('active');
-              navMenu.classList.remove('active');
-              document.body.classList.remove('no-scroll');
+            if (hamburger.classList.contains('active')) { // Solo si el menú está abierto
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            }
           });
-      });
+        });
+      } else {
+        if (!hamburger) console.error("Elemento .hamburger-menu no encontrado.");
+        if (!nav) console.error("Elemento .nav-menu no encontrado.");
+      }
     };
   </script>
   
