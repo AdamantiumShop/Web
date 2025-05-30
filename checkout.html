@@ -85,7 +85,7 @@
 </head>
 <body>
   <div class="checkout-container">
-    <h2>Finalizar Compra</h2>
+    <h2 id="checkout-title">Finalizar Compra</h2>
     <form id="checkout-form">
       <label for="nombre">Nombre completo</label>
       <input type="text" id="nombre" name="nombre" required />
@@ -115,51 +115,49 @@
       <button type="submit">Finalizar Compra</button>
     </form>
 
-    <div class="success-message" id="success">
-      <h3>✅ Compra realizada con éxito</h3>
-      <p>Muchas gracias por tu compra.</p>
-      <small>Se ha enviado un ticket digital a tu correo.</small>
-    </div>
+<div class="success-message" id="success">
+  <h3>✅ Compra realizada con éxito</h3>
+  <p>Muchas gracias por tu compra.</p>
+  <small>Se ha enviado un ticket digital a tu correo.</small>
+  <p id="numero-compra-text"></p>
+  <a href="index.html" class="btn" style="margin-top: 1.5rem; display: inline-block;">⬅ Volver al inicio</a>
+</div>
+
   </div>
 
-  <script>
-
-    // Obtener el nombre del producto desde la URL y precargar el input
-const params = new URLSearchParams(window.location.search);
-const productoInput = document.getElementById('producto');
-if (params.has('producto')) {
-  productoInput.value = decodeURIComponent(params.get('producto'));
+<script>
+  // Obtener nombre y precio desde la URL
+  const params = new URLSearchParams(window.location.search);
+  const productoInput = document.getElementById('producto');
   const precioSpan = document.getElementById('precio');
-if (params.has('precio')) {
-  precioSpan.textContent = decodeURIComponent(params.get('precio'));
-}
+  if (params.has('producto')) productoInput.value = decodeURIComponent(params.get('producto'));
+  if (params.has('precio')) precioSpan.textContent = decodeURIComponent(params.get('precio'));
 
-}
+  document.getElementById('checkout-form').addEventListener('submit', function (e) {
+    e.preventDefault();
 
+    // Generar número de compra
+    const numeroCompra = Math.floor(1000 + Math.random() * 9000);
+    document.getElementById('numero_compra').value = "#" + numeroCompra;
 
-document.getElementById('checkout-form').addEventListener('submit', function (e) {
-  e.preventDefault();
+    const formData = new FormData(this);
 
-  // ✅ Generar número de compra
-  const numeroCompra = Math.floor(1000 + Math.random() * 9000);
-  document.getElementById('numero_compra').value = "#" + numeroCompra;
-
-  const formData = new FormData(this);
-
-  fetch("https://script.google.com/macros/s/AKfycbwFfDSVp4MdFnywzLPBcF33o4okY__taVXSI3wQ0yjzcMn4A8iZ6_MFzuI4Ou72J4pL/exec", {
-    method: "POST",
-    body: formData
-  })
+    fetch("https://script.google.com/macros/s/AKfycbwajOGQBSg6EblLB-SNmG5dMy2X8kuynxBu2HvG6uH_IKB_ApvjOB9YiCbE5Fvnjoys/exec", {
+      method: "POST",
+      body: formData
+    })
     .then(response => response.text())
     .then(data => {
       if (data === "OK") {
         document.getElementById('checkout-form').style.display = 'none';
         document.getElementById('success').style.display = 'block';
 
-        // ✅ Mostrar número de compra al usuario
-        const successDiv = document.getElementById('success');
-        const codigoHTML = `<p><strong>Tu número de compra es: #${numeroCompra}</strong></p>`;
-        successDiv.insertAdjacentHTML("beforeend", codigoHTML);
+        // Cambiar título
+        document.getElementById('checkout-title').textContent = '¡Gracias por tu compra!';
+
+        // Mostrar número
+        const textoNumero = document.getElementById('numero-compra-text');
+        textoNumero.innerHTML = `<strong>Tu número de compra es: #${numeroCompra}</strong>`;
       } else {
         alert("Hubo un error. Por favor intentá de nuevo.");
       }
@@ -168,8 +166,8 @@ document.getElementById('checkout-form').addEventListener('submit', function (e)
       console.error('Error:', error);
       alert("Hubo un problema. Revisa tu conexión o contactanos.");
     });
-});
+  });
+</script>
 
-  </script>
 </body>
 </html>
