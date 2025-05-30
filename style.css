@@ -105,25 +105,7 @@ nav a:hover::after, .footer-links a:hover::after {
   color: white;
   text-align: center;
 }
-.hero-content h1,
-.hero-content p,
-.hero-content .btn {
-  animation: fadeInUp 1s ease forwards;
-  opacity: 0;
-}
-.hero-content h1 { animation-delay: 0.2s; font-size: 3rem; line-height: 1.2; margin-bottom: 0.5em; } /* Margen para separar de p */
-.hero-content p { animation-delay: 0.5s; margin-bottom: 1.5rem; }
-.hero-content .btn { animation-delay: 0.8s; }
-
-@media (max-width: 768px) {
-  .hero-content h1 { font-size: 2.2rem; }
-}
-
-.hero-content h1, .hero-content p {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.hero-content {
+.hero-content { /* Contenedor del texto del hero */
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   border-radius: 12px;
@@ -131,6 +113,24 @@ nav a:hover::after, .footer-links a:hover::after {
   max-width: 700px;
   margin: auto;
   z-index: 2;
+}
+.hero-content h1,
+.hero-content p,
+.hero-content .btn {
+  animation: fadeInUp 1s ease forwards;
+  /* opacity: 0; /* Lo quitamos de aquí, la animación lo maneja desde 'from' */
+}
+.hero-content h1 { animation-delay: 0.2s; font-size: 3rem; line-height: 1.2; margin-bottom: 0.5em; }
+.hero-content p { animation-delay: 0.5s; margin-bottom: 1.5rem; font-size: 1.1rem; /* Asegurar tamaño de p */}
+.hero-content .btn { animation-delay: 0.8s; }
+
+@media (max-width: 768px) {
+  .hero-content h1 { font-size: 2.2rem; }
+  .hero-content p { font-size: 1rem; }
+}
+
+.hero-content h1, .hero-content p {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .gradient-bg {
@@ -168,51 +168,56 @@ nav a:hover::after, .footer-links a:hover::after {
 /* Secciones */
 .section {
   max-width: 900px;
-  margin: 0 auto; /* Cambiado para centrar el contenedor de la sección */
+  margin: 0 auto;
   padding: 4rem 2rem;
   text-align: center;
 }
 .section h2 {
   font-size: 2rem;
   margin-bottom: 1.5rem;
-  color: #fff; /* Títulos de sección principales con color de acento */
+  color: #fff;
   text-align: center;
 }
-
-/* Sección #inicio (si tiene contenido) */
-#inicio {
-    padding-top: 4rem; /* Ajustar si es necesario */
-    padding-bottom: 2rem; /* Menos padding si es solo un título */
+.section p { /* Para párrafos generales dentro de .section */
+    color: #ccc; /* Color de párrafo por defecto */
+    font-size: 1.1rem; /* Tamaño de párrafo por defecto */
+    line-height: 1.7; /* Espaciado de línea para párrafos */
 }
-#inicio h2 {
-    color: #fff; /* Estilo consistente */
+
+
+/* Sección #inicio */
+#inicio {
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+}
+#inicio h2 { /* Si decides poner un título en #inicio */
+    color: #fff;
     margin-bottom: 1rem;
 }
-#inicio p { /* Si tienes un párrafo de bienvenida */
+#inicio p {
     color: #ccc;
     font-size: 1.1rem;
 }
-
 
 /* Lista de servicios */
 #servicios-personalizados ul.servicios {
   list-style: none;
   padding-left: 0;
-  display: inline-block;
-  text-align: left;
+  display: inline-block; /* Para que el bloque de lista se centre */
+  text-align: center;    /* Para centrar el TEXTO de los <li> */
   margin-top: 1rem;
 }
 #servicios-personalizados ul.servicios li {
   margin-bottom: 0.8rem;
   font-size: 1.1rem;
-  color: #eee; /* Asegurar color de texto */
+  color: #eee;
 }
 
 /* Escritorios Destacados (Landing Page) */
-#productos-destacados.escritorios-destacados {
+#productos.escritorios-destacados { /* Renombrado el ID a #productos */
     text-align: center;
 }
-#productos-destacados .intro-text { /* intro-text dentro de productos-destacados */
+#productos .intro-text {
   color: #ccc;
   margin-bottom: 2rem;
   font-size: 1.1rem;
@@ -248,7 +253,7 @@ nav a:hover::after, .footer-links a:hover::after {
 .escritorio-card .btn-pedir,
 .escritorio-card .btn-producto {
   display: inline-block;
-  background-color: #ffffff;
+  background-color: #fff;
   color: #111;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
@@ -259,29 +264,41 @@ nav a:hover::after, .footer-links a:hover::after {
   align-self: flex-start;
 }
 .escritorio-card .btn-pedir:hover,
-.escritorio-card .btn-producto:hover { background-color: #fff; }
+.escritorio-card .btn-producto:hover { background-color: #555; }
 
 
 /* Reseñas */
 .resenias { text-align: center; }
 .carrusel-contenedor { overflow: hidden; padding: 2rem 0; background-color: rgba(13,13,13,255); }
-.carrusel-slider-resenias { display: flex; gap: 1rem; width: max-content; }
+.carrusel-slider-resenias {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: scrollCarrusel 30s linear infinite;
+}
+
+@keyframes scrollCarrusel {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 .reseña { flex: 0 0 300px; }
-.card { background-color: white; color: #111; padding: 1.5rem; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align: left; }
+.card { background-color: #555; color: #111; padding: 1.5rem; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align: left; }
 .mensaje { font-size: 1.1rem; margin-bottom: 1rem; font-style: italic; }
-.estrellas { font-size: 1.2rem; color: #fff; margin-bottom: 0.5rem; }
+.estrellas { font-size: 1.2rem; color: #f7dc6f; margin-bottom: 0.5rem; }
 .cliente { font-weight: bold; }
 
-
 /* Contacto */
-.contacto {
+#contacto.contacto {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #0d0d0d;
-  padding: 4rem 2rem;
+  padding: 2rem; /* reducido de 4rem */
   text-align: center;
+
 }
+
 
 .contacto-card {
   background-color: #1a1a1a;
@@ -290,41 +307,14 @@ nav a:hover::after, .footer-links a:hover::after {
   box-shadow: 0 0 25px rgba(0,0,0,0.4);
   max-width: 600px;
   width: 100%;
+  margin: 0 auto; /* ✨ Esto centra horizontalmente */
 }
 
-.contacto-card h2 {
-  font-size: 2.2rem;
-  color: #fff;
-  margin-bottom: 1rem;
-}
-
-.contacto-card p {
-  font-size: 1.1rem;
-  color: #ccc;
-  margin-bottom: 2rem;
-}
-
-.contacto-botones {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.btn-contacto {
-  background-color: #333;
-  color: white;
-  padding: 0.9rem 1.6rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: background 0.3s ease;
-}
-
-.btn-contacto:hover {
-  background-color: #555;
-}
-
+.contacto-card h2 { font-size: 2.2rem; color: #fff; margin-bottom: 1rem; } /* Título con color de acento */
+.contacto-card p { font-size: 1.1rem; color: #ccc; margin-bottom: 2rem; }
+.contacto-botones { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+.btn-contacto { background-color: #333; color: white; padding: 0.9rem 1.6rem; border-radius: 8px; text-decoration: none; font-size: 1rem; transition: background-color 0.3s ease; }
+.btn-contacto:hover { background-color: #555; }
 
 /* Footer */
 footer { text-align: center; padding: 1.5rem; background-color: #000; color: #888; }
@@ -337,7 +327,29 @@ footer { text-align: center; padding: 1.5rem; background-color: #000; color: #88
 .footer-social a:hover img { opacity: 1; }
 .copyright { font-size: 0.85rem; color: #666; border-top: 1px solid #222; padding-top: 1.5rem; margin-top: 1rem; }
 
+
 /* Responsive (Móvil) */
+
+.hamburger-menu {
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hamburger-menu .bar {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #fff;
+  transition: 0.3s ease;
+  border-radius: 2px;
+}
+
+
 @media (max-width: 768px) {
   header { justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
   .logo-container { order: 1; gap: 0.8rem; }
@@ -371,9 +383,9 @@ footer { text-align: center; padding: 1.5rem; background-color: #000; color: #88
   .contacto-card h2 { font-size: 1.8rem; }
   .contacto-card p { font-size: 1rem; }
   .btn-contacto { padding: 0.8rem 1.4rem; font-size: 0.9rem; }
-  #productos-destacados .escritorio-card img { height: 160px; }
-  #productos-destacados .escritorio-card h3 { font-size: 1.3rem; }
-  #productos-destacados .escritorio-card p { font-size: 0.9rem; min-height: 50px;}
+  #productos .escritorio-card img { height: 160px; } /* ID corregido */
+  #productos .escritorio-card h3 { font-size: 1.3rem; } /* ID corregido */
+  #productos .escritorio-card p { font-size: 0.9rem; min-height: 50px;} /* ID corregido */
   #servicios-personalizados ul.servicios li { font-size: 1rem; }
 }
 
@@ -398,7 +410,7 @@ footer { text-align: center; padding: 1.5rem; background-color: #000; color: #88
 
 /* === ESTILOS PARA TIENDA Y MODAL === */
 #tienda-section {
-  padding: 4rem 2rem; /* Consistente con otras secciones */
+  padding: 4rem 2rem;
   text-align: center;
 }
 #tienda-section h2 {
@@ -407,7 +419,7 @@ footer { text-align: center; padding: 1.5rem; background-color: #000; color: #88
     color: #fff;
     text-align: center;
 }
-#tienda-section .escritorio-card {
+#tienda-section .escritorio-card { /* Hereda de .escritorio-card pero aseguramos text-align */
     text-align: left;
 }
 #tienda-section .escritorio-card img {
@@ -431,6 +443,7 @@ footer { text-align: center; padding: 1.5rem; background-color: #000; color: #88
 #tienda-section .escritorio-card .btn-producto.btn-ver-detalles {
     align-self: flex-start;
 }
+
 
 .modal {
   position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
@@ -472,15 +485,15 @@ body.no-scroll { overflow: hidden; }
 /* Compensación para header sticky */
 section.page-section,
 #tienda-section {
-  padding-top: 110px; 
-  margin-top: -103px; /* Altura estimada del header en desktop */
+  padding-top: 110px;
+  margin-top: -103px; /* Asume altura header ~103px en desktop */
 }
 
 @media (max-width: 768px) {
   section.page-section,
   #tienda-section {
-    padding-top: 85px; 
-    margin-top: -70px;  /* Altura estimada del header en móvil */
+    padding-top: 85px;
+    margin-top: -70px;  /* Asume altura header ~70px en móvil */
   }
   .modal-body { flex-direction: column; align-items: center; }
   .modal-body img { max-width: 70%; margin-bottom: 20px; }
