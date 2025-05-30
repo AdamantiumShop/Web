@@ -31,13 +31,14 @@
   </header>
 
 <main>
-<section class="hero">
+<section class="hero page-section">
   <div class="gradient-bg"></div>
   <div class="hero-content">
     <h1>Transformá<br>tu espacio</h1>
     <p>Cada escritorio es una pieza única pensada para potenciar tu creatividad.</p>
     <a class="btn" href="#productos">Ver Escritorios</a>
   </div>
+  
 </section>
 
     <section id="inicio" class="page-section">
@@ -187,38 +188,20 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const tiendaSection = document.getElementById('tienda-section');
+    const mainPageSections = document.querySelectorAll('main > section.page-section');
+    const heroSection = document.querySelector('.hero');
 
-    // --- Carrusel de Reseñas ---
-    const sliderResenias = document.querySelector(".carrusel-slider-resenias");
-    if (sliderResenias) {
-        const originalReseñas = Array.from(sliderResenias.children);
-        const numOriginalReseñas = originalReseñas.length;
-        let indexResenias = 0;
-
-        if (numOriginalReseñas > 0) {
-            for (let i = 0; i < numOriginalReseñas; i++) {
-                const clone = originalReseñas[i].cloneNode(true);
-                sliderResenias.appendChild(clone);
-            }
-            function slideResenias() {
-                if (tiendaSection && tiendaSection.style.display === 'none') {
-                    indexResenias++;
-                    sliderResenias.style.transform = `translateX(-${indexResenias * 310}px)`;
-                    sliderResenias.style.transition = "transform 0.5s ease-in-out";
-                    if (indexResenias >= numOriginalReseñas) {
-                        setTimeout(() => {
-                            sliderResenias.style.transition = "none";
-                            sliderResenias.style.transform = "translateX(0)";
-                            indexResenias = 0;
-                        }, 500);
-                    }
-                }
-            }
-            setInterval(slideResenias, 4000);
+    // Estado inicial
+    mainPageSections.forEach(section => {
+        if (section.classList.contains('hero')) {
+            section.style.display = 'flex';
+        } else {
+            section.style.display = 'block';
         }
-    }
+    });
+    if (tiendaSection) tiendaSection.style.display = 'none';
 
-    // --- Funcionalidad del menú hamburguesa ---
+    // Menú hamburguesa
     const hamburger = document.querySelector('.hamburger-menu');
     const nav = document.querySelector('.nav-menu');
     if (hamburger && nav) {
@@ -229,13 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA PARA TIENDA Y NAVEGACIÓN ---
-    const mainPageSections = document.querySelectorAll('main > section.page-section');
+    // Navegación entre secciones
     const allNavLinks = document.querySelectorAll('.nav-menu a, .footer-links a, .hero .btn, .escritorio-card .btn-pedir');
-
-    // Estado inicial:
-    mainPageSections.forEach(s => s.style.display = 'block');
-    if(tiendaSection) tiendaSection.style.display = 'none';
 
     allNavLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -245,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (href === '#tienda-section') {
                 e.preventDefault();
                 mainPageSections.forEach(section => section.style.display = 'none');
+                if (heroSection) heroSection.style.display = 'none';
                 if (tiendaSection) {
                     tiendaSection.style.display = 'block';
                     const targetPosition = tiendaSection.offsetTop - headerHeight;
@@ -253,21 +232,27 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (href && href.startsWith('#') && href.length > 1) {
                 e.preventDefault();
                 if (tiendaSection) tiendaSection.style.display = 'none';
-                mainPageSections.forEach(section => section.style.display = 'block');
-
+                mainPageSections.forEach(section => {
+                    if (section.classList.contains('hero')) {
+                        section.style.display = 'flex';
+                    } else {
+                        section.style.display = 'block';
+                    }
+                });
                 const targetElement = document.querySelector(href);
                 if (targetElement) {
                     setTimeout(() => {
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                         const offsetPosition = elementPosition - headerHeight;
                         window.scrollTo({
-                             top: offsetPosition < 0 ? 0 : offsetPosition, // Evitar scroll a posiciones negativas
-                             behavior: 'smooth'
+                            top: offsetPosition < 0 ? 0 : offsetPosition,
+                            behavior: 'smooth'
                         });
                     }, 50);
                 }
             }
 
+            // Cerrar menú móvil si está abierto
             if (hamburger && nav && hamburger.classList.contains('active')) {
                 hamburger.classList.remove('active');
                 nav.classList.remove('active');
@@ -276,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Funcionalidad del Modal de Productos ---
+    // Modal de productos
     const productItems = document.querySelectorAll('#tienda-section .product-item');
     const modal = document.getElementById('productModal');
     if (modal && productItems.length > 0) {
@@ -287,20 +272,28 @@ document.addEventListener('DOMContentLoaded', () => {
             "3": { nombre: "Modelo Odin", imagen: "mueble3.jpg", medidas: "160cm (Ancho) x 75cm (Prof.) x 76cm (Alto) con cajonera", materiales: "Madera Petiribí seleccionada y detalles en acero inoxidable.", precio: "$160.000", descripcionLarga: "El Modelo Odin, padre de todos los escritorios. Ofrece una presencia imponente, materiales de la más alta calidad y una organización superior con su cajonera integrada. Para aquellos que buscan la excelencia." }
         };
 
-        function openModal(productId) {
-            const product = productosData[productId];
-            if (product) {
-                modal.querySelector('#modalImage').src = product.imagen;
-                modal.querySelector('#modalProductName').textContent = product.nombre;
-                modal.querySelector('#modalMedidas').textContent = product.medidas;
-                modal.querySelector('#modalMateriales').textContent = product.materiales;
-                modal.querySelector('#modalDescripcionLarga').textContent = product.descripcionLarga;
-                modal.querySelector('#modalPrecio').textContent = product.precio;
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('show'), 10);
-                document.body.classList.add('no-scroll');
-            }
+function openModal(productId) {
+  const product = productosData[productId];
+  if (product) {
+    modal.querySelector('#modalImage').src = product.imagen;
+    modal.querySelector('#modalProductName').textContent = product.nombre;
+    modal.querySelector('#modalMedidas').textContent = product.medidas;
+    modal.querySelector('#modalMateriales').textContent = product.materiales;
+    modal.querySelector('#modalDescripcionLarga').textContent = product.descripcionLarga;
+    modal.querySelector('#modalPrecio').textContent = product.precio;
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+    document.body.classList.add('no-scroll');
+
+    // 🔽 ESTE BLOQUE NUEVO AGREGA LA REDIRECCIÓN AL FORMULARIO
+    const comprarBtn = modal.querySelector('.btn-cta');
+    comprarBtn.onclick = () => {
+      const producto = encodeURIComponent(product.nombre);
+      window.location.href = `checkout.html?producto=${producto}`;
+    };
+  }
         }
+
         function closeModal() {
             modal.classList.remove('show');
             setTimeout(() => {
@@ -310,18 +303,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300);
             document.body.classList.remove('no-scroll');
         }
+
         productItems.forEach(item => {
             const image = item.querySelector('img');
             const button = item.querySelector('.btn-ver-detalles');
             const productId = item.dataset.productId;
-            if(image) image.addEventListener('click', () => openModal(productId));
-            if(button) button.addEventListener('click', () => openModal(productId));
+            if (image) image.addEventListener('click', () => openModal(productId));
+            if (button) button.addEventListener('click', () => openModal(productId));
+            
         });
-        if(closeModalButton) closeModalButton.addEventListener('click', closeModal);
-        modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
-        document.addEventListener('keydown', (event) => { if (event.key === "Escape" && modal && modal.classList.contains('show')) closeModal(); });
+
+        if (closeModalButton) closeModalButton.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === "Escape" && modal && modal.classList.contains('show')) closeModal();
+        });
     }
 });
 </script>
+
 </body>
 </html>
