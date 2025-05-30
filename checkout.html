@@ -97,7 +97,10 @@
       <input type="tel" id="telefono" name="telefono" required />
 
       <label for="producto">Producto</label>
-      <input type="text" id="producto" name="producto" required readonly />
+<div style="display: flex; align-items: center; gap: 1rem;">
+  <input type="text" id="producto" name="producto" required readonly style="flex: 1;" />
+  <span id="precio" style="font-weight: bold; color: #90ee90;"></span>
+</div>
 
       <label for="pago">Método de pago</label>
       <select id="pago" name="pago" required>
@@ -105,6 +108,9 @@
         <option value="Mercado Pago">Mercado Pago</option>
         <option value="Transferencia Bancaria">Transferencia Bancaria</option>
       </select>
+
+      <input type="hidden" id="numero_compra" name="numero_compra" />
+
 
       <button type="submit">Finalizar Compra</button>
     </form>
@@ -123,31 +129,47 @@ const params = new URLSearchParams(window.location.search);
 const productoInput = document.getElementById('producto');
 if (params.has('producto')) {
   productoInput.value = decodeURIComponent(params.get('producto'));
+  const precioSpan = document.getElementById('precio');
+if (params.has('precio')) {
+  precioSpan.textContent = decodeURIComponent(params.get('precio'));
+}
+
 }
 
 
-    document.getElementById('checkout-form').addEventListener('submit', function (e) {
-      e.preventDefault();
+document.getElementById('checkout-form').addEventListener('submit', function (e) {
+  e.preventDefault();
 
-      const formData = new FormData(this);
-      fetch("https://script.google.com/macros/s/AKfycbwFfDSVp4MdFnywzLPBcF33o4okY__taVXSI3wQ0yjzcMn4A8iZ6_MFzuI4Ou72J4pL/exec", {
-        method: "POST",
-        body: formData
-      })
-        .then(response => response.text())
-        .then(data => {
-          if (data === "OK") {
-            document.getElementById('checkout-form').style.display = 'none';
-            document.getElementById('success').style.display = 'block';
-          } else {
-            alert("Hubo un error. Por favor intentá de nuevo.");
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert("Hubo un problema. Revisa tu conexión o contactanos.");
-        });
+  // ✅ Generar número de compra
+  const numeroCompra = Math.floor(1000 + Math.random() * 9000);
+  document.getElementById('numero_compra').value = "#" + numeroCompra;
+
+  const formData = new FormData(this);
+
+  fetch("https://script.google.com/macros/s/AKfycbwFfDSVp4MdFnywzLPBcF33o4okY__taVXSI3wQ0yjzcMn4A8iZ6_MFzuI4Ou72J4pL/exec", {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.text())
+    .then(data => {
+      if (data === "OK") {
+        document.getElementById('checkout-form').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+
+        // ✅ Mostrar número de compra al usuario
+        const successDiv = document.getElementById('success');
+        const codigoHTML = `<p><strong>Tu número de compra es: #${numeroCompra}</strong></p>`;
+        successDiv.insertAdjacentHTML("beforeend", codigoHTML);
+      } else {
+        alert("Hubo un error. Por favor intentá de nuevo.");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("Hubo un problema. Revisa tu conexión o contactanos.");
     });
+});
+
   </script>
 </body>
 </html>
