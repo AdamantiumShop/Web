@@ -286,11 +286,13 @@ function openModal(productId) {
     document.body.classList.add('no-scroll');
 
     // 🔽 ESTE BLOQUE NUEVO AGREGA LA REDIRECCIÓN AL FORMULARIO
-    const comprarBtn = modal.querySelector('.btn-cta');
-    comprarBtn.onclick = () => {
-      const producto = encodeURIComponent(product.nombre);
-      window.location.href = `checkout.html?producto=${producto}`;
-    };
+const comprarBtn = modal.querySelector('.btn-cta');
+comprarBtn.onclick = () => {
+  const producto = encodeURIComponent(product.nombre);
+  const precio = encodeURIComponent(product.precio);
+  window.location.href = `checkout.html?producto=${producto}&precio=${precio}`;
+};
+
   }
         }
 
