@@ -86,7 +86,7 @@
 <body>
   <div class="checkout-container">
     <h2 id="checkout-title">Finalizar Compra</h2>
-    <form id="checkout-form">
+    <form id="checkout-form" action="https://script.google.com/macros/s/AKfycbzGNL2CYGK7cOp0_-8tS4FibmbMftv599bJW0cWkcf8bDA5vY7isPVLi-VCDzxbVto/exec" method="POST">
       <label for="nombre">Nombre completo</label>
       <input type="text" id="nombre" name="nombre" required />
 
@@ -97,10 +97,10 @@
       <input type="tel" id="telefono" name="telefono" required />
 
       <label for="producto">Producto</label>
-<div style="display: flex; align-items: center; gap: 1rem;">
-  <input type="text" id="producto" name="producto" required readonly style="flex: 1;" />
-  <span id="precio" style="font-weight: bold; color: #90ee90;"></span>
-</div>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <input type="text" id="producto" name="producto" required readonly style="flex: 1;" />
+        <span id="precio" style="font-weight: bold; color: #90ee90;"></span>
+      </div>
 
       <label for="pago">Método de pago</label>
       <select id="pago" name="pago" required>
@@ -111,74 +111,56 @@
 
       <input type="hidden" id="numero_compra" name="numero_compra" />
 
-
       <button type="submit">Finalizar Compra</button>
     </form>
 
-<div class="success-message" id="success">
-  <h3>✅ Compra realizada con éxito</h3>
-  <p>Muchas gracias por tu compra.</p>
-  <small>Se ha enviado un ticket digital a tu correo.</small>
-  <p id="numero-compra-text"></p>
-  <a id="btn-whatsapp" href="#" target="_blank" class="btn" style="margin-top: 1rem; display: inline-block;">
-    📦 Coordinar envío por WhatsApp
-  </a>
-  <a href="index.html" class="btn" style="margin-top: 1.5rem; display: inline-block;">⬅ Volver al inicio</a>
-</div>
-
-
+    <div class="success-message" id="success">
+      <h3>✅ Compra realizada con éxito</h3>
+      <p>Muchas gracias por tu compra.</p>
+      <small>Se ha enviado un ticket digital a tu correo.</small>
+      <p id="numero-compra-text"></p>
+      <a id="btn-whatsapp" href="#" target="_blank" class="btn" style="margin-top: 1rem; display: inline-block;">
+        📦 Coordinar envío por WhatsApp
+      </a>
+      <a href="index.html" class="btn" style="margin-top: 1.5rem; display: inline-block;">⬅ Volver al inicio</a>
+    </div>
   </div>
 
-<script>
-  // Obtener nombre y precio desde la URL
-  const params = new URLSearchParams(window.location.search);
-  const productoInput = document.getElementById('producto');
-  const precioSpan = document.getElementById('precio');
-  if (params.has('producto')) productoInput.value = decodeURIComponent(params.get('producto'));
-  if (params.has('precio')) precioSpan.textContent = decodeURIComponent(params.get('precio'));
+  <script>
+    // Obtener nombre y precio desde la URL
+    const params = new URLSearchParams(window.location.search);
+    const productoInput = document.getElementById('producto');
+    const precioSpan = document.getElementById('precio');
+    if (params.has('producto')) productoInput.value = decodeURIComponent(params.get('producto'));
+    if (params.has('precio')) precioSpan.textContent = decodeURIComponent(params.get('precio'));
 
-  let numeroCompra; // Declara numeroCompra aquí, haciéndola accesible en el alcance más amplio del script
+    let numeroCompra;
 
-  document.getElementById('checkout-form').addEventListener('submit', function (e) {
-    e.preventDefault();
+    document.getElementById('checkout-form').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevenir que se envíe el formulario de forma predeterminada
 
-    // Generar número de compra
-    numeroCompra = Math.floor(1000 + Math.random() * 9000); // Asigna el valor aquí
-    document.getElementById('numero_compra').value = "#" + numeroCompra;
+      // Generar número de compra
+      numeroCompra = Math.floor(1000 + Math.random() * 9000); // Asigna el valor aquí
+      document.getElementById('numero_compra').value = "#" + numeroCompra;
 
-    const formData = new FormData(this);
+      // Mostrar el mensaje de éxito (sin conexión)
+      const textoNumero = document.getElementById('numero-compra-text');
+      textoNumero.innerHTML = `<strong>Tu número de compra es: #${numeroCompra}</strong>`;
 
-    fetch("https://script.google.com/macros/s/AKfycbyoaGxyKqW2jk72LsIuYkS8w_i62sNVDXyRUhaPVxkkpAiICCi--Q8O8lkGozlSe-0kTQ/exec", {
-      method: "POST",
-      body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-      if (data === "OK") {
-        const textoNumero = document.getElementById('numero-compra-text');
-        textoNumero.innerHTML = `<strong>Tu número de compra es: #${numeroCompra}</strong>`; // Ahora numeroCompra está definida aquí
+      // Ocultar el formulario y mostrar el mensaje de éxito
+      document.getElementById('checkout-form').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+      document.getElementById('checkout-title').textContent = '¡Gracias por tu compra!';
 
-        document.getElementById('checkout-form').style.display = 'none';
-        document.getElementById('success').style.display = 'block';
-        document.getElementById('checkout-title').textContent = '¡Gracias por tu compra!';
+      // Preparar el mensaje de WhatsApp
+      const whatsappBtn = document.getElementById('btn-whatsapp');
+      const mensaje = `Hola, hice una compra con el número #${numeroCompra} y quisiera coordinar el envío.`;
+      const link = `https://wa.me/5491122878806?text=${encodeURIComponent(mensaje)}`;
+      whatsappBtn.href = link;
 
-        const whatsappBtn = document.getElementById('btn-whatsapp');
-        const mensaje = `Hola, hice una compra con el número #${numeroCompra} y quisiera coordinar el envío.`;
-        const link = `https://wa.me/5491122878806?text=${encodeURIComponent(mensaje)}`;
-        whatsappBtn.href = link;
-
-      } else {
-        alert("Hubo un error. Por favor intentá de nuevo.");
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert("Hubo un problema. Revisa tu conexión o contactanos.");
+      // Enviar el formulario después de mostrar el número de compra
+      this.submit(); // Ahora el formulario se envía correctamente al script
     });
-  });
-</script>
-
-
-
+  </script>
 </body>
 </html>
