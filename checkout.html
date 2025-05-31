@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finalizar Compra | Adamantium</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="logo-adamantium.jpg" type="image/jpeg" />
+  <style>
+    .checkout-container {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background-color: #1a1a1a;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      color: #eee;
+    }
+
+    .checkout-container h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      color: #fff;
+    }
+
+    form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    form input, form select {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.4rem;
+      border-radius: 10px;
+      border: 1px solid #444;
+      background-color: #111;
+      color: #eee;
+      font-size: 1rem;
+    }
+
+    form button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 1rem;
+      background-color: #fff;
+      color: #111;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #ccc;
+    }
+
+    .success-message {
+      text-align: center;
+      background-color: #0d0d0d;
+      border: 1px solid #2c2c2c;
+      padding: 2rem;
+      border-radius: 16px;
+      display: none;
+      margin-top: 2rem;
+    }
+
+    .success-message h3 {
+      font-size: 1.5rem;
+      color: #90ee90;
+    }
+
+    .success-message small {
+      display: block;
+      margin-top: 1rem;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="checkout-container">
+    <h2 id="checkout-title">Finalizar Compra</h2>
+    <form id="checkout-form">
+      <label for="nombre">Nombre completo</label>
+      <input type="text" id="nombre" name="nombre" required />
+
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="telefono">Teléfono</label>
+      <input type="tel" id="telefono" name="telefono" required />
+
+      <label for="producto">Producto</label>
+<div style="display: flex; align-items: center; gap: 1rem;">
+  <input type="text" id="producto" name="producto" required readonly style="flex: 1;" />
+  <span id="precio" style="font-weight: bold; color: #90ee90;"></span>
+</div>
+
+      <label for="pago">Método de pago</label>
+      <select id="pago" name="pago" required>
+        <option value="">Seleccioná una opción</option>
+        <option value="Mercado Pago">Mercado Pago</option>
+        <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+      </select>
+
+      <input type="hidden" id="numero_compra" name="numero_compra" />
+
+
+      <button type="submit">Finalizar Compra</button>
+    </form>
+
+<div class="success-message" id="success">
+  <h3>✅ Compra realizada con éxito</h3>
+  <p>Muchas gracias por tu compra.</p>
+  <small>Se ha enviado un ticket digital a tu correo.</small>
+  <p id="numero-compra-text"></p>
+  <a id="btn-whatsapp" href="#" target="_blank" class="btn" style="margin-top: 1rem; display: inline-block;">
+    📦 Coordinar envío por WhatsApp
+  </a>
+  <a href="index.html" class="btn" style="margin-top: 1.5rem; display: inline-block;">⬅ Volver al inicio</a>
+</div>
+
+
+  </div>
+
+<script>
+  // Obtener nombre y precio desde la URL
+  const params = new URLSearchParams(window.location.search);
+  const productoInput = document.getElementById('producto');
+  const precioSpan = document.getElementById('precio');
+  if (params.has('producto')) productoInput.value = decodeURIComponent(params.get('producto'));
+  if (params.has('precio')) precioSpan.textContent = decodeURIComponent(params.get('precio'));
+
+  let numeroCompra; // Declara numeroCompra aquí, haciéndola accesible en el alcance más amplio del script
+
+  document.getElementById('checkout-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Generar número de compra
+    numeroCompra = Math.floor(1000 + Math.random() * 9000); // Asigna el valor aquí
+    document.getElementById('numero_compra').value = "#" + numeroCompra;
+
+    const formData = new FormData(this);
+
+    fetch("https://script.google.com/macros/s/AKfycbyoaGxyKqW2jk72LsIuYkS8w_i62sNVDXyRUhaPVxkkpAiICCi--Q8O8lkGozlSe-0kTQ/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+      if (data === "OK") {
+        const textoNumero = document.getElementById('numero-compra-text');
+        textoNumero.innerHTML = `<strong>Tu número de compra es: #${numeroCompra}</strong>`; // Ahora numeroCompra está definida aquí
+
+        document.getElementById('checkout-form').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+        document.getElementById('checkout-title').textContent = '¡Gracias por tu compra!';
+
+        const whatsappBtn = document.getElementById('btn-whatsapp');
+        const mensaje = `Hola, hice una compra con el número #${numeroCompra} y quisiera coordinar el envío.`;
+        const link = `https://wa.me/5491122878806?text=${encodeURIComponent(mensaje)}`;
+        whatsappBtn.href = link;
+
+      } else {
+        alert("Hubo un error. Por favor intentá de nuevo.");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("Hubo un problema. Revisa tu conexión o contactanos.");
+    });
+  });
+</script>
+
+
+
+</body>
+</html>
