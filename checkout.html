@@ -120,12 +120,18 @@
   <p>Muchas gracias por tu compra.</p>
   <small>Se ha enviado un ticket digital a tu correo.</small>
   <p id="numero-compra-text"></p>
+  <a id="btn-whatsapp" href="#" target="_blank" class="btn" style="margin-top: 1rem; display: inline-block;">
+    📦 Coordinar envío por WhatsApp
+  </a>
   <a href="index.html" class="btn" style="margin-top: 1.5rem; display: inline-block;">⬅ Volver al inicio</a>
 </div>
+
 
   </div>
 
 <script>
+
+  
   // Obtener nombre y precio desde la URL
   const params = new URLSearchParams(window.location.search);
   const productoInput = document.getElementById('producto');
@@ -142,32 +148,52 @@
 
     const formData = new FormData(this);
 
-    fetch("https://script.google.com/macros/s/AKfycbzXfSypBpKobzBVwfoJpWqjcPzEV5J_PjvFFt4RMp5cYMvaU2Tt0r2Hw-VMe9sDWwoW/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwtvRrHP3eQ__5Ke4k-z_M4rwYUNKo_74WGNKxyXlsAAjL5DA4F9OiS7Nw9qnZ8I14X/exec", {
       method: "POST",
       body: formData
     })
     .then(response => response.text())
-    .then(data => {
-      if (data === "OK") {
-        document.getElementById('checkout-form').style.display = 'none';
-        document.getElementById('success').style.display = 'block';
+.then(data => {
+  if (data === "OK") {
+    // Mostrar número
+    const textoNumero = document.getElementById('numero-compra-text');
+    textoNumero.innerHTML = `<strong>Tu número de compra es: #${numeroCompra}</strong>`;
 
-        // Cambiar título
-        document.getElementById('checkout-title').textContent = '¡Gracias por tu compra!';
+    // Mostrar sección de éxito y ocultar el formulario
+    document.getElementById('checkout-form').style.display = 'none';
+    document.getElementById('success').style.display = 'block';
 
-        // Mostrar número
-        const textoNumero = document.getElementById('numero-compra-text');
-        textoNumero.innerHTML = `<strong>Tu número de compra es: #${numeroCompra}</strong>`;
-      } else {
-        alert("Hubo un error. Por favor intentá de nuevo.");
-      }
-    })
+    // Cambiar título
+    document.getElementById('checkout-title').textContent = '¡Gracias por tu compra!';
+
+    // Generar link de WhatsApp
+    const whatsappBtn = document.getElementById('btn-whatsapp');
+    const mensaje = `Hola, hice una compra con el número #${numeroCompra} y quisiera coordinar el envío.`;
+    const link = `https://wa.me/5491122878806?text=${encodeURIComponent(mensaje)}`;
+    whatsappBtn.href = link;
+
+  } else {
+    alert("Hubo un error. Por favor intentá de nuevo.");
+  }
+})
+
+    
+
     .catch(error => {
       console.error('Error:', error);
       alert("Hubo un problema. Revisa tu conexión o contactanos.");
     });
   });
+
+  // Generar link de WhatsApp con el número de compra
+const whatsappBtn = document.getElementById('btn-whatsapp');
+const mensaje = `Hola, hice una compra con el número #${numeroCompra} y quisiera coordinar el envío.`;
+const link = `https://wa.me/5491122878806?text=${encodeURIComponent(mensaje)}`;
+whatsappBtn.href = link;
+
 </script>
+
+
 
 </body>
 </html>
